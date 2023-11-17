@@ -1,10 +1,10 @@
+use anyhow::{anyhow, Result};
 use clap::Parser;
+use lazy_static::lazy_static;
 use regex::Regex;
+use std::collections::HashMap;
 use std::fs;
 use std::io::{self, BufRead};
-use anyhow::{anyhow, Result};
-use std::collections::HashMap;
-use lazy_static::lazy_static;
 
 /// Command Line Argument Parser for Rust
 #[derive(Parser, Debug)]
@@ -75,7 +75,11 @@ fn get_format_code(colour: &str, bold: bool) -> Result<String> {
             }
 
             let available_colours = COLOUR_CODES.keys().cloned().collect::<Vec<_>>().join(", ");
-            return Err(anyhow!("Unexpected colour '{}'. Available colours: {}", colour, available_colours));
+            return Err(anyhow!(
+                "Unexpected colour '{}'. Available colours: {}",
+                colour,
+                available_colours
+            ));
         }
     };
 
@@ -92,8 +96,8 @@ fn hex_to_rgb(hex: &str) -> Result<(u8, u8, u8)> {
     }
 
     // Extract and parse the hexadecimal number
-    let num = u32::from_str_radix(&hex[2..], 16)
-        .map_err(|_| anyhow!("Failed to parse hex number"))?;
+    let num =
+        u32::from_str_radix(&hex[2..], 16).map_err(|_| anyhow!("Failed to parse hex number"))?;
 
     // Split the number into three 8-bit parts
     let r = ((num >> 16) & 0xFF) as u8;
